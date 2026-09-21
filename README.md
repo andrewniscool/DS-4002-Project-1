@@ -1,3 +1,3 @@
-# DS-4002-Projects
+# DS-4002-Project-1
 
-This repository contains projects 1, 2, and 3 for Group 4 in DS 4002.
+This repository contains Project 1 for Group 4 in DS 4002.

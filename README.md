@@ -15,10 +15,13 @@ DS-4002-Project-1/
 │   └── README.md
 │
 ├── OUTPUT/
-│   ├── [figure_1].png
-│   ├── [figure_2].png
-│   ├── [figure_3].png
-│   └── ...
+│   ├── 1_scatter_lowess.png
+│   ├── 2_box_windows.png
+│   ├── 3_by_franchise.png
+│   └── 4_per_movie_rho.png
+│   └── 5_timing_hist.png
+│   └── 6_pos_neg_rate.png
+│   └── [figure_name].png
 │
 ├── SCRIPTS/
 │   ├── sentiment_time_analysis.ipynb

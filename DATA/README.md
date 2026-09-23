@@ -17,7 +17,6 @@ The reviews we use are user-generated content and remain the property of their o
 
 # Data Dictionary 
 
-## Data Dictionary
 
 | Feature | Type | Description | Uncertainty / Notes |
 |---|---|---|---|

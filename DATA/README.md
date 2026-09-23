@@ -17,6 +17,30 @@ The reviews we use are user-generated content and remain the property of their o
 
 # Data Dictionary 
 
+## Data Dictionary
+
+| Feature | Type | Description | Uncertainty / Notes |
+|---|---|---|---|
+| `movie_id` | integer | TMDB identifier for the film associated with the review | Unique to each film, but repeated across reviews of the same film |
+| `movie` | string | Title of the film associated with the review | Film titles may not uniquely identify remakes without the accompanying year |
+| `year` | integer | Release year of the film | Contains only the release year, not the full release date |
+| `franchise` | string | Film the review concerns | 4 Marvel-related franchises |
+| `author` | string | Display name of the review author returned by TMDB | User-generated identifier; not needed for the primary analysis |
+| `review_id` | string | TMDB review identifier | Supports de-duplication and provenance |
+| `review` | string | Full text of the TMDB user review | Length and formatting vary across reviews |
+| `review_url` | string | URL linking to the original TMDB review | Retained for provenance and source verification |
+| `created_at` | datetime | Original timestamp indicating when the review was created | Includes date, time, and UTC offset |
+| `updated_at` | datetime | Timestamp indicating when the review was last updated | May differ from the original posting date |
+| `author_username` | string | TMDB username associated with the review author | Helpful to see the same opinion through films but could cause incoordination |
+| `author_rating` | numeric (0–10) | Numerical movie rating supplied by the review author | Frequently missing; 292 of 484 reviews have no rating |
+| `review_date` | date (YYYY-MM-DD) | Date the review was originally posted | Derived directly from the TMDB timestamp; inherits uncertainty in creation |
+| `review_month` | integer | Numeric month in which the review was posted | Derived from the review timestamp; errors could translate |
+| `review_month_name` | string | Name of the month in which the review was posted | Derived directly from review_month so errors could translate |
+| `review_year` | integer | Year in which the review was posted | Derived from the review timestamp; represents when the review was posted |
+| `character_count` | integer | Number of characters in the review text | Calculated from character and word counts, so it inherits their limitations |
+| `word_count` | integer | Number of words in the review text | Same as character_count |
+| `sentence_count` | integer | Number of sentences identified in the review | Informal or incomplete writing can lead to miscalculation |
+| `avg_word_length` | numeric | Average number of characters per word in the review | Same limitations as character_count |
 
 
 # Exploratory Plots

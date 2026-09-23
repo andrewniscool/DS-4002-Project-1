@@ -21,6 +21,6 @@ The reviews we use are user-generated content and remain the property of their o
 
 # Exploratory Plots
 
-<img width="594" height="333" alt="Screenshot 2026-09-23 at 2 38 03 PM" src="https://github.com/user-attachments/assets/e2fa7145-2c96-4cb6-8e85-d2e0e1c086a3" />
+![Screenshot](https://github.com/user-attachments/assets/e2fa7145-2c96-4cb6-8e85-d2e0e1c086a3)
 
 

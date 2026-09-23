@@ -23,3 +23,14 @@ The reviews we use are user-generated content and remain the property of their o
 
 <img src="https://github.com/user-attachments/assets/e2fa7145-2c96-4cb6-8e85-d2e0e1c086a3" width="500">
 
+Figure 1 shows the number of times specific actors/ characters were mentioned. Since these movies include overlapping elements, we wonder to what extent these terms were referenced, considering the number of reviews each film had. 
+
+
+<img src="https://github.com/user-attachments/assets/0bbe1865-fb68-44d5-b4d5-9d0ca6f26693" width="500">
+
+Figure 2 shows when reviews were most written. Although each movie had different release dates, seeing the common dates of reviews can be useful for our project. 
+
+
+<img src="https://github.com/user-attachments/assets/f399112b-31fa-412a-b2eb-56d6620e59f8" width="500">
+
+In Figure 3, we can see the length of each review. This will help us think about assigning sentiment to specific reviews, considering that not all reviews are short and probably have multiple words depicting sentiment. 

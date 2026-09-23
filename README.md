@@ -27,6 +27,7 @@ DS-4002-Project-1/
 │
 ├── LICENSE
 └── README.md
+```text
 
 ## Section 3: Instructions for reproducing your results.  
 

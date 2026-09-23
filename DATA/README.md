@@ -21,6 +21,5 @@ The reviews we use are user-generated content and remain the property of their o
 
 # Exploratory Plots
 
-![Screenshot](https://github.com/user-attachments/assets/e2fa7145-2c96-4cb6-8e85-d2e0e1c086a3)
-
+<img src="https://github.com/user-attachments/assets/e2fa7145-2c96-4cb6-8e85-d2e0e1c086a3" width="500">
 

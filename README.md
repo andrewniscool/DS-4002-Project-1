@@ -6,7 +6,7 @@ This repository contains Project 1 for Group 4 in DS 4002.
 We used Visual Studio (VS) Code and RStudio. For VS Code, we installed packages such as pandas, requests, nltk, matplotlib, numpy, and seaborn. For RStudio, we installed packages such as ggplot2, car, and dplyr. We used Mac as our platform for everything.
 
 ## Section 2: A Map of your documentation. 
-
+```text
 DS-4002-Project-1/
 │
 ├── DATA/

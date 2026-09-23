@@ -45,7 +45,6 @@ These steps rebuild the dataset from the TMDB API, compute the sentiment scores,
 ```bash
    pip install pandas numpy matplotlib seaborn scipy statsmodels requests
 ```
-   (`statsmodels` is required for the LOWESS trend lines; `requests` is required for data collection.)
 
 ### Step 1: Get a TMDB API key
 

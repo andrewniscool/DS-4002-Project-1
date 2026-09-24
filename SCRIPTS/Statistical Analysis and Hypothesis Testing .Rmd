@@ -1,0 +1,633 @@
+---
+title: "Statistical Analysis Script"
+author: "Hershi Aytoda"
+date: "2026-09-23"
+output: pdf_document
+---
+
+
+## Statistical Analysis Script
+
+
+# Project: Time Since Release and Review Sentiment in Selected Marvel Film Reviews
+
+# Purpose:
+
+# This script performs the statistical analyses used to investigate whether sentiment 
+# in selected Marvel film reviews is associated with the time between a film's release and the
+# date the review was posted.
+
+
+# Secondary analyses examine whether average review sentiment differs among the selected films.
+
+
+# Input:
+
+# marvel_movie_reviews_lexicon_sentiment.csv
+
+# 
+
+# Output:
+
+# - Descriptive summaries
+
+# - Correlation test results
+
+# - Linear regression results and diagnostics
+
+# - One-way ANOVA results
+
+# - Tukey HSD post-hoc comparisons
+
+# - Kruskal-Wallis test
+
+# - Statistical diagnostic plots
+
+# 
+
+# Execution:
+
+# This script should be run after the review dataset has been
+
+# collected and cleaned and the polarity scores have been
+
+# calculated.
+
+# 
+
+# Software:
+
+# R / RStudio
+
+# 
+
+# Required packages: dplyr, ggplot2,car
+
+
+```{r}
+# 1. Load Packages and Data
+
+# dplyr is used for data summaries and grouping observations.
+library(dplyr)
+
+# ggplot2 is used to create the visualizations used to
+# examine relationships and distributions in the data.
+library(ggplot2)
+
+# car is used for Levene's test, which evaluates whether
+# the variances are approximately equal across movie groups.
+library(car)
+
+# Read the dataset containing the Marvel film reviews and
+# previously calculated sentiment measures.
+data <-read.csv("~/Desktop/untitled folder/marvel_movie_reviews_lexicon_sentiment.csv")
+
+# Display the structure of the dataset to verify that the
+# variables were imported with the expected data types.
+glimpse(data)
+
+
+
+```
+
+
+```{r}
+# 2. Check Variables Used in Statistical Analysis
+
+
+# Summarize the time since release and polarity score variables
+# to check their ranges and identify any unusual values.
+summary(data$days_since_release)
+summary(data$polarity_score)
+
+# Count missing observations in the two primary variables.
+# Missing values would prevent those observations from being
+# included in analyses involving both variables.
+sum(is.na(data$days_since_release))
+sum(is.na(data$polarity_score))
+
+# Check the number of reviews available for each movie.
+# This is important because the statistical comparisons
+# between movies depend on the number of observations in each group.
+table(data$movie)
+```
+
+```{r}
+
+# 3. Exploratory Analysis: Sentiment and Time Since Release
+
+# Create a scatterplot to visually examine the relationship  between the number 
+# of days since release and review polarity.
+#
+# A LOESS curve is added to assess whether the relationship
+# appears approximately linear or whether there may be a nonlinear pattern.
+
+ggplot(data, aes(
+  x = days_since_release,
+  y = polarity_score
+)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "loess", se = TRUE) +
+  labs(
+    title = "Review Sentiment vs. Time Since Film Release",
+    x = "Days Since Release",
+    y = "Polarity Score"
+  ) +
+  theme_minimal()
+```
+
+```{r}
+
+# 4. Spearman Rank Correlation
+
+# The primary research question asks whether sentiment is associated with the amount 
+# of time between a film's release and the date its review was posted.
+#
+# Spearman's rank correlation is used because it evaluates whether the variables 
+# have a monotonic association without requiring the relationship 
+# to be normally distributed.
+
+# The test returns:
+# - rho: direction and strength of the association
+# - p-value: evidence against the null hypothesis of no
+#   monotonic association
+cor_test <- cor.test(
+  data$days_since_release,
+  data$polarity_score,
+  method = "spearman",
+  exact = FALSE
+)
+
+cor_test
+
+```
+
+
+
+
+```{r}
+# 5. Spearman Rank Correlation for Reviews With at Least 10 Words
+
+# Very short reviews may provide limited information about the reviewer's overall sentiment.
+# This analysis therefore restricts the data to reviews containing at least 10 words.
+
+# The purpose is to determine whether the relationship between
+# time since release and polarity score changes when only
+# reviews with more substantial text are included.
+
+# Create a filtered dataset containing only reviews with at least 10 words.
+data_10_words <- data %>%
+  filter(total_word_count >= 10)
+
+nrow(data_10_words)
+
+summary(data_10_words$total_word_count)
+
+# Calculate Spearman's rank correlation between days since release and polarity score.
+
+# Spearman's correlation is used because it measures whether
+# the variables have a monotonic relationship and does not
+# require the relationship to be normally distributed.
+
+cor_test_10_words <- cor.test(
+  data_10_words$days_since_release,
+  data_10_words$polarity_score,
+  method = "spearman",
+  exact = FALSE
+)
+
+# Display the correlation coefficient, p-value,
+# and other test information.
+cor_test_10_words
+
+
+```
+
+```{r}
+
+
+# 6. Kruskal-Wallis Test Across Timing Windows
+
+
+# The previous analyses treated days since release as a
+# continuous variable. This analysis instead groups reviews
+# according to how long after the film's release the review
+# was posted.
+#
+# Four timing windows are used:
+#   <= 1 month   = 30 days or less
+#   1 mo-1 yr    = 31 through 365 days
+#   1-5 yrs      = 366 through 1,825 days
+#   5+ yrs       = more than 1,825 days
+#
+# The Kruskal-Wallis test is used to determine whether the
+# distribution of polarity scores differs across these
+# independent timing groups.
+#
+# This is a nonparametric alternative to a one-way ANOVA and
+# does not require polarity scores to be normally distributed
+# within each timing group.
+
+
+# Create a categorical variable that assigns each review
+# to one of the four timing windows based on the number
+# of days since the film was released.
+
+data <- data %>%
+  mutate(
+    timing_window = case_when(
+      days_since_release <= 30 ~ "<=1 month",
+      days_since_release <= 365 ~ "1 mo-1 yr",
+      days_since_release <= 1825 ~ "1-5 yrs",
+      days_since_release > 1825 ~ "5+ yrs"
+    )
+  )
+
+
+# Convert timing_window to a factor and specify the order
+# of the groups so that they appear chronologically in
+# tables and visualizations.
+
+data$timing_window <- factor(
+  data$timing_window,
+  levels = c(
+    "<=1 month",
+    "1 mo-1 yr",
+    "1-5 yrs",
+    "5+ yrs"
+  )
+)
+
+
+# Count the number of reviews in each timing window.
+# This confirms that the observations were assigned to
+# the intended groups.
+
+table(data$timing_window)
+
+
+# Calculate descriptive statistics for polarity score
+# within each timing window.
+#
+# The mean and median are reported to describe the center
+# of the polarity scores in each group.
+#
+# The standard deviation describes the amount of variation
+# in polarity scores within each timing window.
+
+timing_summary <- data %>%
+  group_by(timing_window) %>%
+  summarise(
+    n = n(),
+    mean_polarity = mean(polarity_score, na.rm = TRUE),
+    median_polarity = median(polarity_score, na.rm = TRUE),
+    sd_polarity = sd(polarity_score, na.rm = TRUE)
+  )
+
+timing_summary
+
+# Create a boxplot to compare the distribution of polarity
+# scores across the four timing windows.
+#
+# The boxplot displays the median, spread, and potential
+# outliers for each timing group.
+
+ggplot(data, aes(
+  x = timing_window,
+  y = polarity_score
+)) +
+  geom_boxplot() +
+  labs(
+    title = "Review Sentiment Across Timing Windows",
+    x = "Time Since Film Release",
+    y = "Polarity Score"
+  ) +
+  theme_minimal()
+
+
+# Perform the Kruskal-Wallis test.
+#
+# Null hypothesis:
+# The distribution of polarity scores is the same across
+# all four timing windows.
+#
+# Alternative hypothesis:
+# At least one timing window has a different distribution
+# of polarity scores.
+
+kruskal_test <- kruskal.test(
+  polarity_score ~ timing_window,
+  data = data
+)
+
+# Display the Kruskal-Wallis test results.
+
+kruskal_test
+```
+```{r}
+# 7. Post-Hoc Comparisons for Timing Windows
+
+# If the Kruskal-Wallis test is statistically significant,
+# pairwise Wilcoxon rank-sum tests are used to determine
+# which timing windows differ from one another.
+#
+# Holm's adjustment is applied to the p-values to account
+# for the fact that multiple pairwise comparisons are being made.
+
+pairwise_wilcox <- pairwise.wilcox.test(
+  data$polarity_score,
+  data$timing_window,
+  p.adjust.method = "holm"
+)
+
+# Display the pairwise comparison results.
+pairwise_wilcox
+
+
+```
+
+
+
+```{r}
+
+#INITIAL VISUALIZATION
+
+# Create a scatterplot to visually examine the relationship 
+# between time since release and review sentiment before fitting any regression models.  
+
+
+ggplot(data, aes(x=days_since_release, y=polarity_score)) + geom_point()
+
+
+```
+
+
+
+```{r}
+
+# 2. LINEAR REGRESSION 
+# Fit a simple linear regression model to determine whether polarity score can be described
+# as a linear function of the number of days since release. 
+# The response variable is polarity_score.The explanatory variable is days_since_release.
+# The model estimates the expected change in sentiment associated  
+#with a one-day increase in time since release.
+
+
+model_linear <- lm(
+  polarity_score ~ days_since_release,
+  data = data
+)
+
+summary(model_linear)
+
+
+ggplot(data, aes(x = days_since_release,
+                 y = polarity_score)) +
+  geom_point(alpha = 0.6) +
+  geom_smooth(method = "lm", se = TRUE) +
+  labs(
+    title = "Linear Regression of Review Sentiment on Time Since Release",
+    x = "Days Since Release",
+    y = "Polarity Score"
+  ) +
+  theme_minimal()
+
+
+```
+
+
+
+```{r}
+
+# 3. CHECKING LINEAR REGRESSION ASSUMPTIONS 
+# Regression models rely on assumptions about the residuals. 
+# The standard diagnostic plots are used to examine: 
+# 1. Linearity 
+# 2. Constant variance of residuals 
+# 3. Normality of residuals 
+# 4. Potential influential observations
+
+par(mfrow = c(2, 2))
+plot(model_linear)
+
+```
+
+
+
+```{r}
+# EXPONENTIAL REGRESSION 
+#An exponential model is considered because the relationship 
+# between review sentiment and time since release may not be # constant over time. 
+
+# Before fitting the model, days_since_release is centered by 
+# subtracting the minimum observed value.
+
+#The exponential model has the form: 
+# polarity_score = a * exp(-b * days_centered) + c 
+
+# where:a = starting magnitude of the exponential component b = rate of exponential change
+
+data <- data %>%
+  mutate(
+    days_centered = days_since_release -
+      min(days_since_release)
+  )
+
+model_exp <- nls(
+  polarity_score ~ a * exp(-b * days_centered) + c,
+  data = data,
+  start = list(
+    a = 0.1,
+    b = 0.001,
+    c = 0
+  )
+)
+
+summary(model_exp)
+
+```
+
+
+
+```{r}
+
+# 5. VISUALIZE THE EXPONENTIAL MODEL
+
+# Plot the observed review sentiment scores and overlay the fitted exponential regression curve. 
+
+ggplot(data, aes(
+  x = days_since_release,
+  y = polarity_score
+)) +
+  geom_point(alpha = 0.4) +
+  stat_function(
+    fun = function(x) {
+      predict(
+        model_exp,
+        newdata = data.frame(
+          days_centered = x - min(data$days_since_release)
+        )
+      )
+    }
+  ) +
+  labs(
+    title = "Exponential Model of Review Sentiment Over Time",
+    x = "Days Since Release",
+    y = "Polarity Score"
+  ) +
+  theme_minimal()
+
+```
+
+
+```{r}
+# 6. QUADRATIC REGRESSION 
+# A quadratic regression model is used to investigate whether 
+# sentiment changes in a curved pattern over time rather than # following a straight line. 
+# The model includes: 
+
+# - days_since_release 
+# - days_since_release squared 
+
+# The squared term allows the estimated relationship to bendupward or downward.
+
+
+
+
+
+model_quad <- lm(
+  polarity_score ~ days_since_release +
+    I(days_since_release^2),
+  data = data
+)
+
+summary(model_quad)
+
+```
+
+
+
+```{r}
+# 7. VISUALIZE THE QUADRATIC MODEL 
+# Plot the observed data and the fitted quadratic regression curve. The confidence interval around the estimated curveis also displayed.
+
+
+
+ggplot(data, aes(
+  x = days_since_release,
+  y = polarity_score
+)) +
+  geom_point(alpha = 0.4) +
+  geom_smooth(
+    method = "lm",
+    formula = y ~ x + I(x^2),
+    se = TRUE
+  ) +
+  labs(
+    title = "Quadratic Regression of Review Sentiment on Time Since Release",
+    x = "Days Since Release",
+    y = "Polarity Score"
+  ) +
+  theme_minimal()
+
+
+
+```
+
+
+
+```{r}
+
+# 8. COMPARE REGRESSION MODELS 
+
+# The linear, quadratic, and exponential models are compared # to determine how well each describes the
+# observed sentiment  data. 
+
+# AIC balances model fit with model complexity. Lower AIC values indicate a model with a
+# better fit-complexity tradeoff among the models being compared. 
+# The models being compared should be interpreted as alternative descriptions of the same response variable.
+
+
+# RMSE measures the typical size of the prediction errors.
+
+# It is calculated by taking the square root of the average 
+# squared difference between the observed and predicted values. 
+
+# Lower RMSE indicates that the fitted values are, on average, closer to the observed polarity scores.
+
+
+AIC(model_linear, model_quad)
+
+AIC(model_linear, model_exp)
+
+rmse <- function(actual, predicted) {
+  sqrt(mean((actual - predicted)^2))
+}
+
+rmse(
+  data$polarity_score,
+  fitted(model_linear)
+)
+
+rmse(
+  data$polarity_score,
+  fitted(model_exp)
+)
+```
+
+
+
+```{r}
+
+# ONE-WAY ANOVA: DIFFERENCES AMONG MOVIES 
+# One-way ANOVA is used to determine whether mean polarity 
+# scores differ among the movies in the dataset. 
+
+# Null hypothesis: All movie population means are equal. 
+# Alternative hypothesis: At least one movie has a different population mean polarity score. 
+
+# The response variable is polarity_score and the grouping # variable is movie.
+
+# One-way ANOVA
+anova_model <- aov(
+  polarity_score ~ movie,
+  data = data
+)
+
+summary(anova_model)
+
+library(dplyr)
+
+movie_means <- data %>%
+  group_by(movie) %>%
+  summarise(
+    mean_polarity = mean(polarity_score, na.rm = TRUE),
+    n = n()
+  )
+
+movie_means
+
+TukeyHSD(anova_model)
+
+```
+
+
+
+```{r}
+# 11. CALCULATE MEAN SENTIMENT BY MOVIE
+
+# Calculate the average polarity score for each movie. 
+# The number of reviews for each movie is also reported so that 
+# the mean sentiment can be interpreted alongside the sample size.
+
+
+#Is review length associated with sentiment polarity?
+
+cor.test(
+  data$total_word_count,
+  data$polarity_score,
+  method = "spearman",
+  exact = FALSE
+)
+
+```

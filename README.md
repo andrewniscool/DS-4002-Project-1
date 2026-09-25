@@ -3,7 +3,7 @@
 This repository contains Project 1 for Group 4 in DS 4002.
 ## Section 1: Software and platform section 
 
-We used Visual Studio (VS) Code and RStudio. For VS Code, we installed packages such as pandas, requests, nltk, matplotlib, numpy, and seaborn. For RStudio, we installed packages such as ggplot2, car, and dplyr. We used Mac as our platform for everything.
+We used Visual Studio (VS) Code and RStudio. For VS Code, we installed packages such as pandas, requests, nltk, matplotlib, numpy, and seaborn. For RStudio, we installed packages such as ggplot2, car, dplyr, and knitr. We used Mac as our platform for everything.
 
 ## Section 2: A Map of your documentation. 
 ```text
@@ -18,15 +18,22 @@ DS-4002-Project-1/
 │   ├── 1_scatter_lowess.png
 │   ├── 2_box_windows.png
 │   ├── 3_by_franchise.png
-│   └── 4_per_movie_rho.png
-│   └── 5_timing_hist.png
-│   └── 6_pos_neg_rate.png
-│   └── [figure_name].png
+│   ├── 4_per_movie_rho.png
+│   ├── 5_timing_hist.png
+│   ├── 6_pos_neg_rate.png
+│   ├── 7_Scatterplot_polarity_vs_days.png
+│   ├── 8_Linear_Regression_Results.png
+│   ├── 9_Linear_Regression_Assumptions.png
+│   ├── 10_Exponential_Regression_Results.png
+│   ├── 11_Quadratic_Regression_Results.png
+│   ├── 12_Model_Comparison_table.png
+│   └── 13_ANOVA_Results.png
 │
 ├── SCRIPTS/
 │   ├── sentiment_time_analysis.ipynb
 │   ├── TMDB_Lexicon_Sentiment.ipynb
-│   └── TMDB_Script.ipynb
+│   ├── TMDB_Script.ipynb
+│   └── Statistical Analysis and Hypothesis Testing .Rmd
 │
 ├── LICENSE
 ├── requirements.txt
@@ -35,7 +42,7 @@ DS-4002-Project-1/
 
 ## Section 3: Instructions for reproducing your results.  
 
-These steps rebuild the dataset from the TMDB API, compute the sentiment scores, and reproduce every figure and statistic in our Results. Run the steps in order; each step produces the input for the next.
+These steps rebuild the dataset from the TMDB API, compute the sentiment scores, reproduce the Python figures, and rerun the R statistical analysis. Run the steps in order; each step produces the input for the next.
 
 ### Step 0: Clone the repository and install Python dependencies
 
@@ -68,6 +75,12 @@ python -m venv .venv
 ```bash
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
+```
+
+5. Install a current version of **R** from https://cran.r-project.org/. RStudio is not required. From the VS Code terminal, install the required R packages once:
+
+```bash
+Rscript -e "install.packages(c('dplyr', 'ggplot2', 'car', 'knitr'), repos='https://cloud.r-project.org')"
 ```
 
 To reproduce the exact checked-in analysis, you may skip Steps 1 and 2 below and begin with Step 3 using the supplied `DATA/marvel_movie_reviews.csv`. TMDB reviews can change over time, so recollecting them may produce a different dataset and different results.
@@ -140,7 +153,29 @@ Alternatively, open the notebook in JupyterLab or VS Code and select **Restart K
    | `6_pos_neg_rate.png` | Positive vs. negative word rate by timing window |
 3. Confirm that the six figure files appear in the `OUTPUT/` folder.
 
-### Step 5: Check that your results match ours
+### Step 5: Run the R statistical analysis
+
+The R Markdown file contains the statistical analysis used for outputs 7-13. To review the results interactively, open `SCRIPTS/Statistical Analysis and Hypothesis Testing .Rmd` in RStudio or VS Code and run its R chunks in order.
+
+To reproduce the R results from the repository root, run:
+
+```bash
+Rscript -e 'setwd("SCRIPTS"); knitr::opts_chunk$set(fig.path="../OUTPUT/r-analysis-figures/figure-"); knitr::knit("Statistical Analysis and Hypothesis Testing .Rmd", output="../OUTPUT/statistical_analysis.md")'
+```
+
+This creates `OUTPUT/statistical_analysis.md`, containing the numerical results, and `OUTPUT/r-analysis-figures/`, containing plots generated directly from the unchanged R Markdown file. The numbered PNG files below were exported during the original RStudio analysis and remain included as the reference presentation outputs; the command does not overwrite them:
+
+| File | What it shows |
+|------|---------------|
+| `7_Scatterplot_polarity_vs_days.png` | Polarity versus days since release |
+| `8_Linear_Regression_Results.png` | Linear-regression results |
+| `9_Linear_Regression_Assumptions.png` | Linear-regression diagnostic plots |
+| `10_Exponential_Regression_Results.png` | Exponential-regression fit |
+| `11_Quadratic_Regression_Results.png` | Quadratic-regression fit |
+| `12_Model_Comparison_table.png` | Regression-model comparison |
+| `13_ANOVA_Results.png` | One-way ANOVA results by movie |
+
+### Step 6: Check that your results match ours
 
 If you used our provided dataset, the notebook output should match these values:
 

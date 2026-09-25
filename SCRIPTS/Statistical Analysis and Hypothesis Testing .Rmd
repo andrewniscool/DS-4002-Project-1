@@ -78,9 +78,24 @@ library(ggplot2)
 # the variances are approximately equal across movie groups.
 library(car)
 
-# Read the dataset containing the Marvel film reviews and
-# previously calculated sentiment measures.
-data <-read.csv("~/Desktop/untitled folder/marvel_movie_reviews_lexicon_sentiment.csv")
+# Find the repository root whether this file is run from the root or SCRIPTS/.
+project_root <- normalizePath(getwd())
+
+while (!dir.exists(file.path(project_root, "DATA"))) {
+  parent_directory <- dirname(project_root)
+  if (identical(parent_directory, project_root)) {
+    stop("Could not find the project DATA/ directory.")
+  }
+  project_root <- parent_directory
+}
+
+# Read the repository's processed review dataset.
+data_path <- file.path(
+  project_root,
+  "DATA",
+  "marvel_movie_reviews_lexicon_sentiment.csv"
+)
+data <- read.csv(data_path)
 
 # Display the structure of the dataset to verify that the
 # variables were imported with the expected data types.

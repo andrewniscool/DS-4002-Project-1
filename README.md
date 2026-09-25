@@ -29,6 +29,7 @@ DS-4002-Project-1/
 │   └── TMDB_Script.ipynb
 │
 ├── LICENSE
+├── requirements.txt
 └── README.md
 ```
 
@@ -36,62 +37,98 @@ DS-4002-Project-1/
 
 These steps rebuild the dataset from the TMDB API, compute the sentiment scores, and reproduce every figure and statistic in our Results. Run the steps in order; each step produces the input for the next.
 
-### Step 0: Requirements
+### Step 0: Clone the repository and install Python dependencies
 
-1. Install **Python 3.10 or later** and **Jupyter** (JupyterLab, Jupyter Notebook, VS Code, or Google Colab all work).
-2. Clone this repository and move into it:
+1. Install **Python 3.10 or later** and Git.
+2. Clone this repository and move into its root directory:
+
 ```bash
-   git clone <repo-url>
-   cd <repo-name>
+git clone https://github.com/andrewniscool/DS-4002-Project-1.git
+cd DS-4002-Project-1
 ```
-3. Install the required packages:
+
+3. Create and activate a virtual environment.
+
+On macOS or Linux:
+
 ```bash
-   pip install pandas numpy matplotlib seaborn scipy statsmodels requests
+python3 -m venv .venv
+source .venv/bin/activate
 ```
+
+On Windows PowerShell:
+
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+```
+
+4. Install every required Python package from the repository's dependency file:
+
+```bash
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
+
+To reproduce the exact checked-in analysis, you may skip Steps 1 and 2 below and begin with Step 3 using the supplied `DATA/marvel_movie_reviews.csv`. TMDB reviews can change over time, so recollecting them may produce a different dataset and different results.
 
 ### Step 1: Get a TMDB API key
 
 1. Create a free account at https://www.themoviedb.org/signup.
 2. Go to **Settings → API** and request an API key (choose "Developer," non-commercial use).
-3. Copy your **API Read Access Token** or **API key**.
-4. Paste it into `<SCRIPTS/collect_reviews.py>` where indicated (`API_KEY = "..."`), or set it as an environment variable:
+3. Copy your TMDB **API Key (v3 auth)**. The collection notebook passes this value through TMDB's `api_key` parameter.
+4. Set the key as an environment variable before executing the collection notebook.
+
+On macOS or Linux:
+
 ```bash
-   export TMDB_API_KEY="your_key_here"
+export TMDB_API_KEY="your_key_here"
 ```
+
+On Windows PowerShell:
+
+```powershell
+$env:TMDB_API_KEY = "your_key_here"
+```
+
+When the notebook is run interactively without this environment variable, it securely prompts for the key instead of storing it in the repository.
 
 ### Step 2: Collect the reviews
 
-1. Run the collection script:
+1. From the repository root, execute the collection notebook:
+
 ```bash
-   python <SCRIPTS/TMDB_Script.ipynb>
+python -m jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.timeout=600 "SCRIPTS/TMDB_Script.ipynb"
 ```
-2. The script queries the TMDB API for the English-language user reviews of the 21 films in our study (Spider-Man, Avengers, Captain America, and Iron Man franchises) and saves the raw reviews to `<DATA/marvel_movie_reviews.csv>`.
-3. Each row contains the movie title, TMDB movie ID, review ID, review text, author, author rating (if given), and the review's `created_at` timestamp.
+2. The notebook queries the TMDB API for English-language user reviews of the 21 films in the study and saves the raw reviews to `DATA/marvel_movie_reviews.csv`.
+3. Each row contains `movie_id`, `movie`, `release_date`, `franchise`, `review_id`, `review`, `review_date`, and `days_since_release`.
 
 ### Step 3: Preprocess and compute sentiment
 
-1. Run the preprocessing/sentiment script (or notebook):
+1. Execute the sentiment-scoring notebook from the repository root:
+
 ```bash
-   python <SCRIPTS/TMDB_Lexicon_Sentiment.ipynb>
+python -m jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.timeout=600 "SCRIPTS/TMDB_Lexicon_Sentiment.ipynb"
 ```
 2. This step:
-   - Removes duplicate reviews using `review_id` and drops rows missing review text or a date.
-   - Adds each film's TMDB release date and computes `days_since_release` = review date − release date.
-   - Lowercases the text and removes HTML, URLs, punctuation, and extra whitespace, then splits it into words.
-   - Counts matches against our positive and negative word lists (`<DATA/positive_words.txt>`, `<DATA/negative_words.txt>`).
+   - Loads the raw reviews from `DATA/marvel_movie_reviews.csv`.
+   - Tokenizes alphabetic words and contractions and converts the tokens to lowercase.
+   - Downloads NLTK's Bing Liu Opinion Lexicon when it is not already installed.
+   - Counts token matches against the lexicon's positive and negative word lists.
    - Computes the polarity score for each review:
      **polarity = (positive word count − negative word count) / total word count**
-3. The output is saved as `OUTPUT/marvel_movie_reviews_lexicon_sentiment.csv`, with columns including `movie`, `franchise`, `days_since_release`, `positive_word_count`, `negative_word_count`, `total_word_count`, and `polarity_score`.
+3. The output is saved as `DATA/marvel_movie_reviews_lexicon_sentiment.csv`, with columns including `movie`, `franchise`, `days_since_release`, `positive_word_count`, `negative_word_count`, `total_word_count`, and `polarity_score`.
 
 ### Step 4: Run the analysis and generate the figures
 
-1. Open `<SCRIPTS/sentiment_time_analysis.ipynb>` in Jupyter.
-2. Confirm the first code cell points to the dataset:
-```python
-   CSV_PATH = file path/"marvel_movie_reviews_lexicon_sentiment.csv"
+1. Execute the analysis notebook from the repository root:
+
+```bash
+python -m jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.timeout=600 "SCRIPTS/sentiment_time_analysis.ipynb"
 ```
-3. Select **Run → Run All Cells** (or **Kernel → Restart & Run All**).
-4. The notebook prints the summary statistics and saves six figures to a `figures/` folder:
+
+Alternatively, open the notebook in JupyterLab or VS Code and select **Restart Kernel and Run All Cells**.
+2. The notebook prints the summary statistics and saves six figures directly to the `OUTPUT/` folder:
 
    | File | What it shows |
    |------|---------------|
@@ -101,7 +138,8 @@ These steps rebuild the dataset from the TMDB API, compute the sentiment scores,
    | `4_per_movie_rho.png` | Spearman ρ for each film with ≥8 reviews |
    | `5_timing_hist.png` | Distribution of when reviews were posted |
    | `6_pos_neg_rate.png` | Positive vs. negative word rate by timing window |
-5. Move the 'figures/' folder to the 'OUTPUT' folder.
+3. Confirm that the six figure files appear in the `OUTPUT/` folder.
+
 ### Step 5: Check that your results match ours
 
 If you used our provided dataset, the notebook output should match these values:

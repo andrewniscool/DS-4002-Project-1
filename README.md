@@ -1,6 +1,13 @@
 # DS-4002-Project-1
 
 This repository contains Project 1 for Group 4 in DS 4002.
+
+This project examines whether sentiment in selected Marvel movie reviews is associated with how long after release the reviews were posted. Using the supplied dataset, the overall Spearman correlation was close to zero and not statistically significant (ρ = −0.02, p = 0.60).
+
+## Changes from MI2
+
+MI2 originally proposed regression controls for movie or franchise and a comparison with TMDB ratings. As the project developed, those pieces were not included in the final MI3 analysis. The current results use Spearman correlations, timing-window comparisons, unadjusted regression models, franchise and per-movie plots, and a movie-level ANOVA, so they should be read as unadjusted associations rather than controlled effects.
+
 ## Section 1: Software and platform section 
 
 We used Visual Studio (VS) Code and RStudio. For VS Code, we installed packages such as pandas, requests, nltk, matplotlib, numpy, and seaborn. For RStudio, we installed packages such as ggplot2, car, dplyr, and knitr. We used Mac as our platform for everything.
@@ -35,7 +42,7 @@ DS-4002-Project-1/
 │   ├── TMDB_Script.ipynb
 │   └── Statistical Analysis and Hypothesis Testing .Rmd
 │
-├── LICENSE
+├── LICENSE.md
 ├── requirements.txt
 └── README.md
 ```
@@ -90,7 +97,7 @@ To reproduce the exact checked-in analysis, you may skip Steps 1 and 2 below and
 1. Create a free account at https://www.themoviedb.org/signup.
 2. Go to **Settings → API** and request an API key (choose "Developer," non-commercial use).
 3. Copy your TMDB **API Key (v3 auth)**. The collection notebook passes this value through TMDB's `api_key` parameter.
-4. Set the key as an environment variable before executing the collection notebook.
+4. Set the key as an environment variable before executing the collection notebook, or if using VS code, paste it when prompted to while running the TMDB_Script.ipynb notebook.
 
 On macOS or Linux:
 
@@ -140,7 +147,7 @@ python -m jupyter nbconvert --to notebook --execute --inplace --ExecutePreproces
 python -m jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.timeout=600 "SCRIPTS/sentiment_time_analysis.ipynb"
 ```
 
-Alternatively, open the notebook in JupyterLab or VS Code and select **Restart Kernel and Run All Cells**.
+   Alternatively, open the notebook in JupyterLab or VS Code and select **Restart Kernel and Run All Cells**.
 2. The notebook prints the summary statistics and saves six figures directly to the `OUTPUT/` folder:
 
    | File | What it shows |
@@ -175,7 +182,7 @@ This creates `OUTPUT/statistical_analysis.md`, containing the numerical results,
 | `12_Model_Comparison_table.png` | Regression-model comparison |
 | `13_ANOVA_Results.png` | One-way ANOVA results by movie |
 
-### Step 6: Check that your results match ours
+### Step 6: Check your results!
 
 If you used our provided dataset, the notebook output should match these values:
 
@@ -191,3 +198,5 @@ If you used our provided dataset, the notebook output should match these values:
 | Reviews posted before release (negative days) | 2 |
 
 All tests are two-sided with α = 0.05. Small differences (in the third decimal place) can come from package versions; larger differences usually mean the data were re-collected (see the note in Step 2).
+
+However, movie reviews can always change. People can delete them, add new reviews, or edit them at any time. If you rerun this project and collect new, more recent data, your results could differ from ours.

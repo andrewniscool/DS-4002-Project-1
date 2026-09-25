@@ -74,8 +74,7 @@ library(dplyr)
 # examine relationships and distributions in the data.
 library(ggplot2)
 
-# car is used for Levene's test, which evaluates whether
-# the variances are approximately equal across movie groups.
+# car is available if we want to run Levene's test for the movie groups.
 library(car)
 
 # Find the repository root whether this file is run from the root or SCRIPTS/.
@@ -365,10 +364,7 @@ pairwise_wilcox
 
 ```{r}
 
-#INITIAL VISUALIZATION
-
-# Create a scatterplot to visually examine the relationship 
-# between time since release and review sentiment before fitting any regression models.  
+# Quick look at the relationship before fitting the regression models.
 
 
 ggplot(data, aes(x=days_since_release, y=polarity_score)) + geom_point()
@@ -380,12 +376,8 @@ ggplot(data, aes(x=days_since_release, y=polarity_score)) + geom_point()
 
 ```{r}
 
-# 2. LINEAR REGRESSION 
-# Fit a simple linear regression model to determine whether polarity score can be described
-# as a linear function of the number of days since release. 
-# The response variable is polarity_score.The explanatory variable is days_since_release.
-# The model estimates the expected change in sentiment associated  
-#with a one-day increase in time since release.
+# Linear regression
+# This estimates how polarity changes with each additional day since release.
 
 
 model_linear <- lm(
@@ -414,9 +406,8 @@ ggplot(data, aes(x = days_since_release,
 
 ```{r}
 
-# 3. CHECKING LINEAR REGRESSION ASSUMPTIONS 
-# Regression models rely on assumptions about the residuals. 
-# The standard diagnostic plots are used to examine: 
+# Check the linear regression assumptions.
+# These plots cover:
 # 1. Linearity 
 # 2. Constant variance of residuals 
 # 3. Normality of residuals 
@@ -430,17 +421,16 @@ plot(model_linear)
 
 
 ```{r}
-# EXPONENTIAL REGRESSION 
-#An exponential model is considered because the relationship 
-# between review sentiment and time since release may not be # constant over time. 
+# Exponential regression
+# This checks whether the relationship changes at a different rate over time.
 
 # Before fitting the model, days_since_release is centered by 
 # subtracting the minimum observed value.
 
-#The exponential model has the form: 
+# The exponential model has the form:
 # polarity_score = a * exp(-b * days_centered) + c 
 
-# where:a = starting magnitude of the exponential component b = rate of exponential change
+# Here, a is the starting magnitude and b is the rate of change.
 
 data <- data %>%
   mutate(
@@ -466,9 +456,7 @@ summary(model_exp)
 
 ```{r}
 
-# 5. VISUALIZE THE EXPONENTIAL MODEL
-
-# Plot the observed review sentiment scores and overlay the fitted exponential regression curve. 
+# Plot the data with the fitted exponential curve.
 
 ggplot(data, aes(
   x = days_since_release,
@@ -496,15 +484,14 @@ ggplot(data, aes(
 
 
 ```{r}
-# 6. QUADRATIC REGRESSION 
-# A quadratic regression model is used to investigate whether 
-# sentiment changes in a curved pattern over time rather than # following a straight line. 
-# The model includes: 
+# Quadratic regression
+# This checks for a curved relationship instead of a straight line.
+# The model includes:
 
 # - days_since_release 
 # - days_since_release squared 
 
-# The squared term allows the estimated relationship to bendupward or downward.
+# The squared term lets the fitted line bend upward or downward.
 
 
 
@@ -523,8 +510,7 @@ summary(model_quad)
 
 
 ```{r}
-# 7. VISUALIZE THE QUADRATIC MODEL 
-# Plot the observed data and the fitted quadratic regression curve. The confidence interval around the estimated curveis also displayed.
+# Plot the data with the fitted quadratic curve and confidence interval.
 
 
 
@@ -553,10 +539,7 @@ ggplot(data, aes(
 
 ```{r}
 
-# 8. COMPARE REGRESSION MODELS 
-
-# The linear, quadratic, and exponential models are compared # to determine how well each describes the
-# observed sentiment  data. 
+# Compare the regression models.
 
 # AIC balances model fit with model complexity. Lower AIC values indicate a model with a
 # better fit-complexity tradeoff among the models being compared. 
@@ -594,14 +577,13 @@ rmse(
 
 ```{r}
 
-# ONE-WAY ANOVA: DIFFERENCES AMONG MOVIES 
-# One-way ANOVA is used to determine whether mean polarity 
-# scores differ among the movies in the dataset. 
+# One-way ANOVA: differences among movies
+# This checks whether average polarity differs by movie.
 
 # Null hypothesis: All movie population means are equal. 
 # Alternative hypothesis: At least one movie has a different population mean polarity score. 
 
-# The response variable is polarity_score and the grouping # variable is movie.
+# Polarity score is the response and movie is the group.
 
 # One-way ANOVA
 anova_model <- aov(
@@ -636,7 +618,7 @@ TukeyHSD(anova_model)
 # the mean sentiment can be interpreted alongside the sample size.
 
 
-#Is review length associated with sentiment polarity?
+# Is review length associated with sentiment polarity?
 
 cor.test(
   data$total_word_count,

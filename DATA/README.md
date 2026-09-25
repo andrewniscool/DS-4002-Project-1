@@ -1,59 +1,85 @@
 
-# Data Summary 
-Our dataset is a consolidated CSV of English-language user reviews collected from The Movie Database (TMDB) for superhero films, currently including films from the Spider-Man, Avengers, Captain America, and Iron Man franchises. We have 485 observations or reviews. Reviews were collected through the TMDB API using a Python script, and each row contains the review text, movie title, review posting date, TMDB reviewer rating when available, and TMDB review ID. We will add each film’s release date and derive variables including time since release, review word count, positive and negative word counts, and a polarity score for the statistical analysis. The dataset and collection materials are stored in the group’s shared Google Drive folder and can be accessed through the link provided with the project materials.
+# Data Summary
+
+The `DATA` folder contains two related CSV files with 486 reviews of 21 films from the Spider-Man, Avengers, Captain America, and Iron Man franchises. The reviews were returned by The Movie Database (TMDB) API using its English-language (`en-US`) review endpoint.
+
+- `marvel_movie_reviews.csv` is the collection-stage dataset. It contains the movie and franchise identifiers, review text and identifier, film release date, review date, and the number of days between release and review.
+- `marvel_movie_reviews_lexicon_sentiment.csv` is the final dataset used for analysis. It contains every column from the collection-stage dataset plus positive-word, negative-word, and total-token counts and a normalized polarity score.
+
+Both files contain the same 486 unique reviews and have no missing values in their current columns. The current snapshot contains 21 films across four franchise groups. Because TMDB users can add or update reviews, rerunning the collection notebook later may produce a different number of observations and different results.
 
 
 # Provenance
-All reviews originate from user-generated contributions on The Movie Database (TMDB) and were collected through the official TMDB API rather than by scraping the website. We created a Python script to retrieve reviews for selected superhero films and organize the API responses into a structured dataset containing the review text, movie title, review date, reviewer rating when available, and TMDB review ID. Review IDs are retained to support de-duplication and maintain a link between each observation and its source. Film release dates will also be obtained from TMDB and used with review posting dates to calculate the amount of time between a film’s release and each review.
+
+The reviews are user-generated contributions retrieved through the official TMDB API rather than by scraping the TMDB website. The collection notebook, [`TMDB_Script.ipynb`](../SCRIPTS/TMDB_Script.ipynb), searches for 21 selected films by title and release year, retrieves every available page of reviews returned by the `en-US` endpoint, and saves the results to `marvel_movie_reviews.csv`.
+
+For each review, the collection process retains the TMDB movie identifier, movie title, film release date, manually assigned franchise group, TMDB review identifier, full review text, and original creation date. The original review timestamp is converted to a `YYYY-MM-DD` date, and `days_since_release` is calculated as the review date minus the film release date. Review identifiers are unique in the current snapshot and are retained for record identification and duplicate checking.
+
+The sentiment notebook, [`TMDB_Lexicon_Sentiment.ipynb`](../SCRIPTS/TMDB_Lexicon_Sentiment.ipynb), reads the collection-stage CSV and creates `marvel_movie_reviews_lexicon_sentiment.csv`. It tokenizes alphabetic words and contractions, converts them to lowercase, and compares them with the Bing Liu Opinion Lexicon. The polarity score is calculated as:
+
+**polarity score = (positive word count - negative word count) / total token count**
 
 
 # License
-TMDB permits non-commercial use of its API with appropriate attribution [1], [2]. Our group also contacted TMDB and described our intended academic use of API-collected film reviews for sentiment analysis; TMDB responded that there was no issue with the proposed use. We will credit TMDB and include the required notice: “This product uses the TMDB API but is not endorsed or certified by TMDB.”
+
+Use of TMDB data is subject to TMDB's API terms and attribution requirements [1], [2]. The repository's MIT license applies to the group's original code and documentation; it does not transfer ownership of TMDB data or user-written review text. The required attribution notice is:
+
+> This product uses the TMDB API but is not endorsed or certified by TMDB.
 
 
 # Ethical Statements
-The reviews we use are user-generated content and remain the property of their original authors. We will use the review text only for this coursework, keep the raw dataset out of any public or commercial release, and report our results in aggregate. 
+
+The reviews are publicly posted, user-generated content and remain the property of their original authors. The repository retains the review text and TMDB review identifier but does not include reviewer names, usernames, profile information, or ratings. The data are used for academic analysis, and findings are reported in aggregate rather than as evaluations of individual reviewers.
+
+Lexicon-based sentiment scores are imperfect representations of a reviewer's opinion. The method may not correctly interpret context, sarcasm, negation, unusual spelling, or words that are absent from the lexicon. The polarity score should therefore be interpreted as a reproducible text measure rather than a definitive judgment of a review's meaning.
 
 
-# Data Dictionary 
+# Data Dictionary
 
+## Columns in both CSV files
 
 | Feature | Type | Description | Uncertainty / Notes |
 |---|---|---|---|
-| `movie_id` | integer | TMDB identifier for the film associated with the review | Unique to each film, but repeated across reviews of the same film |
-| `movie` | string | Title of the film associated with the review | Film titles may not uniquely identify remakes without the accompanying year |
-| `year` | integer | Release year of the film | Contains only the release year, not the full release date |
-| `franchise` | string | Film the review concerns | 4 Marvel-related franchises |
-| `author` | string | Display name of the review author returned by TMDB | User-generated identifier; not needed for the primary analysis |
-| `review_id` | string | TMDB review identifier | Supports de-duplication and provenance |
-| `review` | string | Full text of the TMDB user review | Length and formatting vary across reviews |
-| `review_url` | string | URL linking to the original TMDB review | Retained for provenance and source verification |
-| `created_at` | datetime | Original timestamp indicating when the review was created | Includes date, time, and UTC offset |
-| `updated_at` | datetime | Timestamp indicating when the review was last updated | May differ from the original posting date |
-| `author_username` | string | TMDB username associated with the review author | Helpful to see the same opinion through films but could cause incoordination |
-| `author_rating` | numeric (0–10) | Numerical movie rating supplied by the review author | Frequently missing; 292 of 484 reviews have no rating |
-| `review_date` | date (YYYY-MM-DD) | Date the review was originally posted | Derived directly from the TMDB timestamp; inherits uncertainty in creation |
-| `review_month` | integer | Numeric month in which the review was posted | Derived from the review timestamp; errors could translate |
-| `review_month_name` | string | Name of the month in which the review was posted | Derived directly from review_month so errors could translate |
-| `review_year` | integer | Year in which the review was posted | Derived from the review timestamp; represents when the review was posted |
-| `character_count` | integer | Number of characters in the review text | Calculated from character and word counts, so it inherits their limitations |
-| `word_count` | integer | Number of words in the review text | Same as character_count |
-| `sentence_count` | integer | Number of sentences identified in the review | Informal or incomplete writing can lead to miscalculation |
-| `avg_word_length` | numeric | Average number of characters per word in the review | Same limitations as character_count |
+| `movie_id` | integer | TMDB identifier for the film associated with the review | Repeated across reviews of the same film; use with `movie` to identify the film |
+| `movie` | string | Film title returned by TMDB | Titles are not guaranteed to be globally unique, so `movie_id` is the more reliable identifier |
+| `release_date` | date (`YYYY-MM-DD`) | TMDB release date for the film | Taken from the movie metadata returned during collection |
+| `franchise` | string | Manually assigned franchise group: Spider-Man, Avengers, Captain America, or Iron Man | Used for grouped analysis and does not represent an official TMDB category |
+| `review_id` | string | TMDB identifier for the individual review | Unique across the 486 reviews in the current snapshot |
+| `review` | string | Full text of the TMDB user review | User-generated text varies in length, spelling, formatting, and language quality |
+| `review_date` | date (`YYYY-MM-DD`) | Date the review was originally posted | Derived from TMDB's creation timestamp after converting it to UTC and removing the time component |
+| `days_since_release` | integer | Number of days from the film's release date to the review date | Calculated as `review_date - release_date`; two reviews in the current snapshot were posted one day before release and therefore have a value of `-1` |
+
+## Additional columns in the final sentiment dataset
+
+| Feature | Type | Description | Uncertainty / Notes |
+|---|---|---|---|
+| `positive_word_count` | integer | Number of cleaned review tokens found in the Bing Liu positive-word list | Lexicon matching does not account for context, sarcasm, or negation |
+| `negative_word_count` | integer | Number of cleaned review tokens found in the Bing Liu negative-word list | Lexicon matching does not account for context, sarcasm, or negation |
+| `total_word_count` | integer | Number of alphabetic words and contractions retained by the tokenizer | Punctuation and numeric-only tokens are excluded; this is a cleaned token count rather than a general-purpose word count |
+| `polarity_score` | numeric | Normalized sentiment score: `(positive_word_count - negative_word_count) / total_word_count` | Higher values indicate more positive lexicon matches; the score is not a TMDB user rating |
 
 
 # Exploratory Plots
 
-<img src="https://github.com/user-attachments/assets/e2fa7145-2c96-4cb6-8e85-d2e0e1c086a3" width="500">
+The MI2 project outline contained preliminary exploratory plots based on an earlier 485-review snapshot. For MI3, those preliminary figures have been replaced below with plots generated from the current 486-review sentiment dataset by [`sentiment_time_analysis.ipynb`](../SCRIPTS/sentiment_time_analysis.ipynb).
 
-Figure 1 shows the number of times specific actors/ characters were mentioned. Since these movies include overlapping elements, we wonder to what extent these terms were referenced, considering the number of reviews each film had. 
+![Review sentiment versus time since release](../OUTPUT/1_scatter_lowess.png)
+
+**Figure 1. Review sentiment versus time since release.** Each point represents one review, and the LOWESS curve summarizes the overall pattern. The primary numerical association is evaluated using Spearman's rank-order correlation [3].
+
+![Distribution of review timing](../OUTPUT/5_timing_hist.png)
+
+**Figure 2. Distribution of review timing.** The histogram shows how many years after a film's release its reviews were posted. Reviews span both the release period and many years afterward.
+
+![Positive and negative word rates by timing window](../OUTPUT/6_pos_neg_rate.png)
+
+**Figure 3. Positive and negative word rates by timing window.** Reviews are grouped by time since release, and the bars compare the percentages of cleaned tokens that match the positive and negative lexicons.
 
 
-<img src="https://github.com/user-attachments/assets/0bbe1865-fb68-44d5-b4d5-9d0ca6f26693" width="500">
+# References
 
-Figure 2 shows when reviews were most written. Although each movie had different release dates, seeing the common dates of reviews can be useful for our project. 
+[1] "API Terms of Use - The Movie Database (TMDB)," *The Movie Database*. Accessed: Sep. 16, 2026. [Online]. Available: https://www.themoviedb.org/api-terms-of-use
 
+[2] "FAQ," *The Movie Database Developer Documentation*. Accessed: Sep. 16, 2026. [Online]. Available: https://developer.themoviedb.org/docs/faq
 
-<img src="https://github.com/user-attachments/assets/f399112b-31fa-412a-b2eb-56d6620e59f8" width="500">
-
-In Figure 3, we can see the length of each review. This will help us think about assigning sentiment to specific reviews, considering that not all reviews are short and probably have multiple words depicting sentiment. 
+[3] "Spearman's Rank-Order Correlation - A Guide to When to Use It, What It Does and What the Assumptions Are," *Laerd Statistics*. Accessed: Sep. 18, 2026. [Online]. Available: https://statistics.laerd.com/statistical-guides/spearmans-rank-order-correlation-statistical-guide.php

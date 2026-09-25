@@ -75,6 +75,12 @@ Lexicon-based sentiment scores are imperfect representations of a reviewer's opi
 
 **Figure 3. Reviews Overtime By Franchise.** This figure shows the number of reviews posted over time for each franchise. Because the movies were released on different dates, comparing review activity across time helps identify periods when reviews were more concentrated and provides context for examining how the timing of reviews may relate to sentiment.
 
+<img width="4200" height="2100" alt="14_reviews_per_film" src="https://github.com/user-attachments/assets/9ba9bb56-a512-4a1e-b086-f79f98cd2931" />
+
+**Figure 4. Review Counts By Film.** The bar graphs show that the reviews counts vary by film, from 59 (Avengers: Endgame) to 4 (The Amazing Spider-Man), so a few popular 
+films dominate the dataset.​
+
+
 
 
 

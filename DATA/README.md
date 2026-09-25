@@ -63,7 +63,7 @@ Lexicon-based sentiment scores are imperfect representations of a reviewer's opi
 
 The MI2 project outline contained preliminary exploratory plots based on an earlier 485-review snapshot. For MI3, those preliminary figures have been replaced below with plots generated from the current 486-review sentiment dataset by [`sentiment_time_analysis.ipynb`](../SCRIPTS/sentiment_time_analysis.ipynb).
 
-<img width="1000" alt="Screenshot 2026-09-25 at 12 05 29 PM" src="https://github.com/user-attachments/assets/1e625daf-9f0b-4ddd-ac1c-e9390cc7998c" />
+<img width="1000" alt="Screenshot 2026-09-25 at 12 04 14 PM" src="https://github.com/user-attachments/assets/2ff4c858-7182-4040-bb22-b176fa5247a2" />
 
 **Figure 1. Review Mentions of Characters and Actors.** This graph shows the number of reviews that mention specific actors or characters. Because these actors and characters appear across multiple films, identifying how frequently they are referenced provides context for interpreting the content and sentiment of the reviews. Differences in the number of available reviews for each film should also be considered when comparing these mentions.
 
@@ -72,7 +72,7 @@ The MI2 project outline contained preliminary exploratory plots based on an earl
 **Figure 2. Distribution of review timing.** The histogram shows how many years after a film's release its reviews were posted. Reviews span both the release period and many years afterward.
 
 
-<img width="1000" alt="Screenshot 2026-09-25 at 12 04 14 PM" src="https://github.com/user-attachments/assets/2ff4c858-7182-4040-bb22-b176fa5247a2" />
+<img width="1000" alt="Screenshot 2026-09-25 at 12 05 29 PM" src="https://github.com/user-attachments/assets/1e625daf-9f0b-4ddd-ac1c-e9390cc7998c" />
 
 
 **Figure 3. Reviews Overtime By Franchise.** This figure shows the number of reviews posted over time for each franchise. Because the movies were released on different dates, comparing review activity across time helps identify periods when reviews were more concentrated and provides context for examining how the timing of reviews may relate to sentiment.

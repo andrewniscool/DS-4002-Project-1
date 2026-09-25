@@ -95,3 +95,7 @@ films dominate the dataset.​
 [2] "FAQ," *The Movie Database Developer Documentation*. Accessed: Sep. 16, 2026. [Online]. Available: https://developer.themoviedb.org/docs/faq
 
 [3] "Spearman's Rank-Order Correlation - A Guide to When to Use It, What It Does and What the Assumptions Are," *Laerd Statistics*. Accessed: Sep. 18, 2026. [Online]. Available: https://statistics.laerd.com/statistical-guides/spearmans-rank-order-correlation-statistical-guide.php
+
+[4] M. Hu and B. Liu, “Mining and summarizing customer reviews,” in Proc. 10th ACM SIGKDD Int. Conf. Knowledge Discovery and Data Mining (KDD ’04), Seattle, WA, USA, 2004, pp. 168–177, doi: 10.1145/1014052.1014073. OpenAIRE - Explore
+
+[5] S. Bird, E. Klein, and E. Loper, Natural Language Processing with Python. Sebastopol, CA, USA: O’Reilly Media, 2009. O'Reilly Media

@@ -77,10 +77,9 @@ The MI2 project outline contained preliminary exploratory plots based on an earl
 **Figure 3. Positive and negative word rates by timing window.** Reviews are grouped by time since release, and the bars compare the percentages of cleaned tokens that match the positive and negative lexicons.
 
 
-<img width="590" height="375" alt="Screenshot 2026-09-25 at 12 05 29 PM" src="https://github.com/user-attachments/assets/1e625daf-9f0b-4ddd-ac1c-e9390cc7998c" />
+<img width="1000" alt="Screenshot 2026-09-25 at 12 05 29 PM" src="https://github.com/user-attachments/assets/1e625daf-9f0b-4ddd-ac1c-e9390cc7998c" />
 
-
-<img width="515" height="305" alt="Screenshot 2026-09-25 at 12 04 14 PM" src="https://github.com/user-attachments/assets/2ff4c858-7182-4040-bb22-b176fa5247a2" />
+<img width="1000" alt="Screenshot 2026-09-25 at 12 04 14 PM" src="https://github.com/user-attachments/assets/2ff4c858-7182-4040-bb22-b176fa5247a2" />
 
 
 

@@ -1,0 +1,178 @@
+---
+title: "Exploratory Graph"
+author: "Hershi Aytoda"
+date: "2026-09-16"
+output: pdf_document
+---
+
+
+```{r}
+
+# Load the review dataset from the project's DATA folder 
+
+data <- read.csv("DATA/marvel_movie_reviews.csv")
+head(data)
+
+```
+
+
+
+
+
+
+```{r}
+
+library(ggplot2)
+library(dplyr)
+
+# Convert review date to Date format
+data$review_date <- as.Date(data$review_date)
+
+# Count reviews by month and franchise
+reviews_over_time <- data %>%
+  mutate(month = as.Date(format(review_date, "%Y-%m-01"))) %>%
+  count(month, franchise)
+
+# Plot
+ggplot(reviews_over_time, aes(x = month, y = n, color = franchise)) +
+  geom_line(linewidth =0.5) +
+  labs(
+    title = "Number of Movie Reviews Over Time",
+    x = "Review Date",
+    y = "Number of Reviews",
+    color = "Franchise"
+  ) +
+  theme_minimal()
+
+
+```
+
+
+
+
+```{r}
+
+library(ggplot2)
+
+# Check whether each review mentions the actor/character/franchise
+
+data$tobey_mention <- grepl(
+  "tobey maguire|tobey",
+  data$review,
+  ignore.case = TRUE
+)
+
+data$andrew_mention <- grepl(
+  "andrew garfield|andrew",
+  data$review,
+  ignore.case = TRUE
+)
+
+data$tom_mention <- grepl(
+  "tom holland",
+  data$review,
+  ignore.case = TRUE
+)
+
+data$miles_mention <- grepl(
+  "miles morales|miles",
+  data$review,
+  ignore.case = TRUE
+)
+
+data$chris_mention <- grepl(
+  "chris evans",
+  data$review,
+  ignore.case = TRUE
+)
+
+data$robert_mention <- grepl(
+  "robert downey jr|robert downey|rdj",
+  data$review,
+  ignore.case = TRUE
+)
+
+data$avengers_mention <- grepl(
+  "avengers",
+  data$review,
+  ignore.case = TRUE
+)
+
+data$captain_america_mention <- grepl(
+  "captain america|steve rogers|chris evans",
+  data$review,
+  ignore.case = TRUE
+)
+
+data$iron_man_mention <- grepl(
+  "iron man|tony stark|robert downey",
+  data$review,
+  ignore.case = TRUE
+)
+
+data$spiderman_mention <- grepl(
+  "spider-man|spiderman",
+  data$review,
+  ignore.case = TRUE
+)
+
+
+# Percentage of reviews mentioning each actor/character/franchise
+
+mean(data$tobey_mention) * 100
+mean(data$andrew_mention) * 100
+mean(data$tom_mention) * 100
+mean(data$miles_mention) * 100
+mean(data$chris_mention) * 100
+mean(data$robert_mention) * 100
+mean(data$avengers_mention) * 100
+mean(data$captain_america_mention) * 100
+mean(data$iron_man_mention) * 100
+mean(data$spiderman_mention) * 100
+
+
+# Number of reviews mentioning each actor/character/franchise
+
+character_mentions <- c(
+  "Tobey Maguire" = sum(data$tobey_mention),
+  "Andrew Garfield" = sum(data$andrew_mention),
+  "Tom Holland" = sum(data$tom_mention),
+  "Miles Morales" = sum(data$miles_mention),
+  "Chris Evans" = sum(data$chris_mention),
+  "Robert Downey Jr." = sum(data$robert_mention),
+  "Avengers" = sum(data$avengers_mention),
+  "Captain America" = sum(data$captain_america_mention),
+  "Iron Man" = sum(data$iron_man_mention),
+  "Spider-Man" = sum(data$spiderman_mention)
+)
+
+
+# Create data frame for plotting
+
+character_df <- data.frame(
+  character = names(character_mentions),
+  reviews = as.numeric(character_mentions)
+)
+
+
+# Bar plot with labels
+
+ggplot(character_df, aes(x = character, y = reviews, fill = character)) +
+  geom_col() +
+  geom_text(
+    aes(label = reviews),
+    vjust = -0.3
+  ) +
+  labs(
+    title = "Reviews Mentioning Characters and Actors",
+    x = "Actor / Character / Franchise",
+    y = "Number of Reviews"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+```
+
+```

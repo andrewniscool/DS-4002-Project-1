@@ -38,8 +38,10 @@ DS-4002-Project-1/
 │
 ├── SCRIPTS/
 │   ├── sentiment_time_analysis.ipynb
+│   ├── MI2_Exploratory_Graphs.Rmd
 │   ├── TMDB_Lexicon_Sentiment.ipynb
 │   ├── TMDB_Script.ipynb
+│   ├── exploratory_plots.ipynb
 │   └── Statistical Analysis and Hypothesis Testing .Rmd
 │
 ├── LICENSE.md

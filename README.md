@@ -172,7 +172,7 @@ To reproduce the R results from the repository root, run:
 Rscript -e 'setwd("SCRIPTS"); knitr::opts_chunk$set(fig.path="../OUTPUT/r-analysis-figures/figure-"); knitr::knit("Statistical Analysis and Hypothesis Testing .Rmd", output="../OUTPUT/statistical_analysis.md")'
 ```
 
-This creates `OUTPUT/statistical_analysis.md`, containing the numerical results, and `OUTPUT/r-analysis-figures/`, containing plots generated directly from the unchanged R Markdown file. The numbered PNG files below were exported during the original RStudio analysis and remain included as the reference presentation outputs; the command does not overwrite them:
+The numbered PNG files below were exported during the original RStudio analysis and remain included as the reference presentation outputs; the command does not overwrite them:
 
 | File | What it shows |
 |------|---------------|

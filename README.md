@@ -37,12 +37,12 @@ DS-4002-Project-1/
 │   └── 13_ANOVA_Results.png
 │
 ├── SCRIPTS/
-│   ├── sentiment_time_analysis.ipynb
 │   ├── MI2_Exploratory_Graphs.Rmd
+│   ├── Statistical Analysis and Hypothesis Testing .Rmd
 │   ├── TMDB_Lexicon_Sentiment.ipynb
 │   ├── TMDB_Script.ipynb
 │   ├── exploratory_plots.ipynb
-│   └── Statistical Analysis and Hypothesis Testing .Rmd
+│   └── sentiment_time_analysis.ipynb
 │
 ├── LICENSE.md
 ├── requirements.txt

@@ -11,11 +11,11 @@ Both files contain the same 486 unique reviews and have no missing values in the
 
 # Provenance
 
-The reviews are user-generated contributions retrieved through the official TMDB API rather than by scraping the TMDB website. The collection notebook, [`TMDB_Script.ipynb`](../SCRIPTS/TMDB_Script.ipynb), searches for 21 selected films by title and release year, retrieves every available page of reviews returned by the `en-US` endpoint, and saves the results to `marvel_movie_reviews.csv`.
+The reviews are user-generated contributions retrieved through the official TMDB API rather than by scraping the TMDB website. The collection notebook, [`1_TMDB_Script.ipynb`](../SCRIPTS/1_TMDB_Script.ipynb), searches for 21 selected films by title and release year, retrieves every available page of reviews returned by the `en-US` endpoint, and saves the results to `marvel_movie_reviews.csv`.
 
 For each review, the collection process retains the TMDB movie identifier, movie title, film release date, manually assigned franchise group, TMDB review identifier, full review text, and original creation date. The original review timestamp is converted to a `YYYY-MM-DD` date, and `days_since_release` is calculated as the review date minus the film release date. Review identifiers are unique in the current snapshot and are retained for record identification and duplicate checking.
 
-The sentiment notebook, [`TMDB_Lexicon_Sentiment.ipynb`](../SCRIPTS/TMDB_Lexicon_Sentiment.ipynb), reads the collection-stage CSV and creates `marvel_movie_reviews_lexicon_sentiment.csv`. It tokenizes alphabetic words and contractions, converts them to lowercase, and compares them with the Bing Liu Opinion Lexicon. The polarity score is calculated as:
+The sentiment notebook, [`4_TMDB_Lexicon_Sentiment.ipynb`](../SCRIPTS/4_TMDB_Lexicon_Sentiment.ipynb), reads the collection-stage CSV and creates `marvel_movie_reviews_lexicon_sentiment.csv`. It tokenizes alphabetic words and contractions, converts them to lowercase, and compares them with the Bing Liu Opinion Lexicon. The polarity score is calculated as:
 
 **polarity score = (positive word count - negative word count) / total token count**
 

@@ -34,15 +34,16 @@ DS-4002-Project-1/
 │   ├── 10_Exponential_Regression_Results.png
 │   ├── 11_Quadratic_Regression_Results.png
 │   ├── 12_Model_Comparison_table.png
-│   └── 13_ANOVA_Results.png
+│   ├── 13_ANOVA_Results.png
+│   └── 14_reviews_per_film.png
 │
 ├── SCRIPTS/
-│   ├── MI2_Exploratory_Graphs.Rmd
-│   ├── Statistical Analysis and Hypothesis Testing .Rmd
-│   ├── TMDB_Lexicon_Sentiment.ipynb
-│   ├── TMDB_Script.ipynb
-│   ├── exploratory_plots.ipynb
-│   └── sentiment_time_analysis.ipynb
+│   ├── 1_TMDB_Script.ipynb
+│   ├── 2_exploratory_plots.ipynb
+│   ├── 3_MI2_Exploratory_Graphs.Rmd
+│   ├── 4_TMDB_Lexicon_Sentiment.ipynb
+│   ├── 5_sentiment_time_analysis.ipynb
+│   └── 6_Statistical_Analysis_and_Hypothesis_Testing .Rmd
 │
 ├── LICENSE.md
 ├── requirements.txt
@@ -51,7 +52,7 @@ DS-4002-Project-1/
 
 ## Section 3: Instructions for reproducing your results.  
 
-These steps rebuild the dataset from the TMDB API, compute the sentiment scores, reproduce the Python figures, and rerun the R statistical analysis. Run the steps in order; each step produces the input for the next.
+These steps rebuild the dataset from the TMDB API, compute the sentiment scores, reproduce the Python figures, and rerun the R statistical analysis. The numbered script names show the intended workflow: collect the raw reviews, explore the raw data, calculate sentiment, and then run the final analyses. The exploratory scripts do not modify the datasets used by the later scripts.
 
 ### Step 0: Clone the repository and install Python dependencies
 
@@ -99,7 +100,7 @@ To reproduce the exact checked-in analysis, you may skip Steps 1 and 2 below and
 1. Create a free account at https://www.themoviedb.org/signup.
 2. Go to **Settings → API** and request an API key (choose "Developer," non-commercial use).
 3. Copy your TMDB **API Key (v3 auth)**. The collection notebook passes this value through TMDB's `api_key` parameter.
-4. Set the key as an environment variable before executing the collection notebook, or if using VS code, paste it when prompted to while running the TMDB_Script.ipynb notebook.
+4. Set the key as an environment variable before executing the collection notebook, or if using VS Code, paste it when prompted to while running `1_TMDB_Script.ipynb`.
 
 On macOS or Linux:
 
@@ -120,7 +121,7 @@ When the notebook is run interactively without this environment variable, it sec
 1. From the repository root, execute the collection notebook:
 
 ```bash
-python -m jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.timeout=600 "SCRIPTS/TMDB_Script.ipynb"
+python -m jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.timeout=600 "SCRIPTS/1_TMDB_Script.ipynb"
 ```
 2. The notebook queries the TMDB API for English-language user reviews of the 21 films in the study and saves the raw reviews to `DATA/marvel_movie_reviews.csv`.
 3. Each row contains `movie_id`, `movie`, `release_date`, `franchise`, `review_id`, `review`, `review_date`, and `days_since_release`.
@@ -130,7 +131,7 @@ python -m jupyter nbconvert --to notebook --execute --inplace --ExecutePreproces
 1. Execute the sentiment-scoring notebook from the repository root:
 
 ```bash
-python -m jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.timeout=600 "SCRIPTS/TMDB_Lexicon_Sentiment.ipynb"
+python -m jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.timeout=600 "SCRIPTS/4_TMDB_Lexicon_Sentiment.ipynb"
 ```
 2. This step:
    - Loads the raw reviews from `DATA/marvel_movie_reviews.csv`.
@@ -146,7 +147,7 @@ python -m jupyter nbconvert --to notebook --execute --inplace --ExecutePreproces
 1. Execute the analysis notebook from the repository root:
 
 ```bash
-python -m jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.timeout=600 "SCRIPTS/sentiment_time_analysis.ipynb"
+python -m jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.timeout=600 "SCRIPTS/5_sentiment_time_analysis.ipynb"
 ```
 
    Alternatively, open the notebook in JupyterLab or VS Code and select **Restart Kernel and Run All Cells**.
@@ -164,15 +165,9 @@ python -m jupyter nbconvert --to notebook --execute --inplace --ExecutePreproces
 
 ### Step 5: Run the R statistical analysis
 
-The R Markdown file contains the statistical analysis used for outputs 7-13. To review the results interactively, open `SCRIPTS/Statistical Analysis and Hypothesis Testing .Rmd` in RStudio or VS Code and run its R chunks in order.
+The R Markdown file contains the statistical analysis used for outputs 7-13. To review the results interactively, open `SCRIPTS/6_Statistical_Analysis_and_Hypothesis_Testing .Rmd` in RStudio or VS Code and run its R chunks in order.
 
-To reproduce the R results from the repository root, run:
-
-```bash
-Rscript -e 'setwd("SCRIPTS"); knitr::opts_chunk$set(fig.path="../OUTPUT/r-analysis-figures/figure-"); knitr::knit("Statistical Analysis and Hypothesis Testing .Rmd", output="../OUTPUT/statistical_analysis.md")'
-```
-
-The numbered PNG files below were exported during the original RStudio analysis and remain included as the reference presentation outputs; the command does not overwrite them:
+The numbered PNG files below were exported during the original RStudio analysis and remain included as the reference presentation outputs:
 
 | File | What it shows |
 |------|---------------|
